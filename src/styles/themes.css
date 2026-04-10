@@ -1,0 +1,110 @@
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --mirabelle-ds-color-background: #ffffff;
+  --mirabelle-ds-color-surface: #f7f9f8;
+  --mirabelle-ds-color-surface-alt: #ecf1ef;
+  --mirabelle-ds-color-primary: #5c756c;
+  --mirabelle-ds-color-primary-hover: #475c55;
+  --mirabelle-ds-color-primary-text: #ffffff;
+  --mirabelle-ds-color-text: #1a1a1a;
+  --mirabelle-ds-color-text-secondary: #575958;
+  --mirabelle-ds-color-text-muted: #617e74;
+  --mirabelle-ds-color-border: #c5d3cd;
+  --mirabelle-ds-color-border-light: #dfe7e4;
+  --mirabelle-ds-color-success: #009183;
+  --mirabelle-ds-color-warning: #d36f6d;
+  --mirabelle-ds-color-error: #d70025;
+  --mirabelle-ds-color-info: #008691;
+
+  --ds-color-bg-canvas: var(--mirabelle-ds-color-background);
+  --ds-color-bg-subtle: var(--mirabelle-ds-color-surface);
+  --ds-color-bg-surface: var(--mirabelle-ds-color-surface);
+  --ds-color-bg-elevated: var(--mirabelle-ds-color-background);
+  --ds-color-bg-inset: var(--mirabelle-ds-color-surface-alt);
+
+  --ds-color-text-primary: var(--mirabelle-ds-color-text);
+  --ds-color-text-secondary: var(--mirabelle-ds-color-text-secondary);
+  --ds-color-text-muted: var(--mirabelle-ds-color-text-muted);
+  --ds-color-text-inverse: var(--mirabelle-ds-color-primary-text);
+
+  --ds-color-border-subtle: var(--mirabelle-ds-color-border-light);
+  --ds-color-border-strong: var(--mirabelle-ds-color-border);
+
+  --ds-color-accent: var(--mirabelle-ds-color-primary);
+  --ds-color-accent-hover: var(--mirabelle-ds-color-primary-hover);
+  --ds-color-accent-contrast: var(--mirabelle-ds-color-primary-text);
+  --ds-color-primary: var(--mirabelle-ds-color-primary);
+  --ds-color-primary-hover: var(--mirabelle-ds-color-primary-hover);
+  --ds-color-primary-foreground: var(--mirabelle-ds-color-primary-text);
+  --ds-color-secondary: var(--mirabelle-ds-color-surface-alt);
+  --ds-color-secondary-foreground: var(--mirabelle-ds-color-text);
+  --ds-color-muted: var(--mirabelle-ds-color-surface-alt);
+  --ds-color-muted-foreground: var(--mirabelle-ds-color-text-secondary);
+  --ds-color-border: var(--mirabelle-ds-color-border);
+  --ds-color-ring: color-mix(in srgb, var(--mirabelle-ds-color-primary) 22%, transparent);
+  --ds-color-overlay: rgba(26, 26, 26, 0.45);
+
+  --ds-color-success: var(--mirabelle-ds-color-success);
+  --ds-color-warning: var(--mirabelle-ds-color-warning);
+  --ds-color-danger: var(--mirabelle-ds-color-error);
+  --ds-color-info: var(--mirabelle-ds-color-info);
+
+  --ds-gradient-page: var(--mirabelle-ds-color-background);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --mirabelle-ds-color-background: #121212;
+  --mirabelle-ds-color-surface: #2a2b2b;
+  --mirabelle-ds-color-surface-alt: #3c3c3c;
+  --mirabelle-ds-color-primary: #95b1a6;
+  --mirabelle-ds-color-primary-hover: #aac0b8;
+  --mirabelle-ds-color-primary-text: #000000;
+  --mirabelle-ds-color-text: #e8e8e8;
+  --mirabelle-ds-color-text-secondary: #c4c5c4;
+  --mirabelle-ds-color-text-muted: #88a79c;
+  --mirabelle-ds-color-border: #4e4f4e;
+  --mirabelle-ds-color-border-light: #363736;
+  --mirabelle-ds-color-success: #15c9b8;
+  --mirabelle-ds-color-warning: #f99d98;
+  --mirabelle-ds-color-error: #e9475d;
+  --mirabelle-ds-color-info: #00a7ae;
+
+  --ds-color-bg-canvas: var(--mirabelle-ds-color-background);
+  --ds-color-bg-subtle: var(--mirabelle-ds-color-surface);
+  --ds-color-bg-surface: var(--mirabelle-ds-color-surface);
+  --ds-color-bg-elevated: var(--mirabelle-ds-color-surface);
+  --ds-color-bg-inset: var(--mirabelle-ds-color-surface-alt);
+
+  --ds-color-text-primary: var(--mirabelle-ds-color-text);
+  --ds-color-text-secondary: var(--mirabelle-ds-color-text-secondary);
+  --ds-color-text-muted: var(--mirabelle-ds-color-text-muted);
+  --ds-color-text-inverse: var(--mirabelle-ds-color-primary-text);
+
+  --ds-color-border-subtle: var(--mirabelle-ds-color-border-light);
+  --ds-color-border-strong: var(--mirabelle-ds-color-border);
+
+  --ds-color-accent: var(--mirabelle-ds-color-primary);
+  --ds-color-accent-hover: var(--mirabelle-ds-color-primary-hover);
+  --ds-color-accent-contrast: var(--mirabelle-ds-color-primary-text);
+  --ds-color-primary: var(--mirabelle-ds-color-primary);
+  --ds-color-primary-hover: var(--mirabelle-ds-color-primary-hover);
+  --ds-color-primary-foreground: var(--mirabelle-ds-color-primary-text);
+  --ds-color-secondary: var(--mirabelle-ds-color-surface-alt);
+  --ds-color-secondary-foreground: var(--mirabelle-ds-color-text);
+  --ds-color-muted: var(--mirabelle-ds-color-surface-alt);
+  --ds-color-muted-foreground: var(--mirabelle-ds-color-text-secondary);
+  --ds-color-border: var(--mirabelle-ds-color-border);
+  --ds-color-ring: color-mix(in srgb, var(--mirabelle-ds-color-primary) 26%, transparent);
+  --ds-color-overlay: rgba(0, 0, 0, 0.64);
+
+  --ds-color-success: var(--mirabelle-ds-color-success);
+  --ds-color-warning: var(--mirabelle-ds-color-warning);
+  --ds-color-danger: var(--mirabelle-ds-color-error);
+  --ds-color-info: var(--mirabelle-ds-color-info);
+
+  --ds-gradient-page: var(--mirabelle-ds-color-background);
+}

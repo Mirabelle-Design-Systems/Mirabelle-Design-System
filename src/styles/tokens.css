@@ -1,0 +1,311 @@
+:root {
+  /* Typography families */
+  --ds-font-family-sans: "Instrument Sans", "Avenir Next", "Segoe UI", sans-serif;
+  --ds-font-family-serif: "Ivar Text", "Georgia", serif;
+  --ds-font-family-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+
+  /* Typography weights */
+  --ds-font-weight-thin: 100;
+  --ds-font-weight-extralight: 200;
+  --ds-font-weight-light: 300;
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-semibold: 600;
+  --ds-font-weight-bold: 700;
+  --ds-font-weight-extrabold: 800;
+  --ds-font-weight-black: 900;
+
+  /* Typography sizes */
+  --ds-font-size-2xs: 0.6875rem;
+  --ds-font-size-xs: 0.75rem;
+  --ds-font-size-sm: 0.875rem;
+  --ds-font-size-base: 1rem;
+  --ds-font-size-md: 1.125rem;
+  --ds-font-size-lg: 1.25rem;
+  --ds-font-size-xl: 1.5rem;
+  --ds-font-size-2xl: 1.875rem;
+  --ds-font-size-3xl: 2.25rem;
+  --ds-font-size-4xl: 3rem;
+  --ds-font-size-5xl: 3.75rem;
+  --ds-font-size-6xl: 4.5rem;
+
+  /* Numeric aliases for component scales */
+  --ds-font-size-100: var(--ds-font-size-xs);
+  --ds-font-size-200: var(--ds-font-size-sm);
+  --ds-font-size-300: var(--ds-font-size-base);
+  --ds-font-size-400: var(--ds-font-size-md);
+  --ds-font-size-500: 1.375rem;
+  --ds-font-size-600: 1.75rem;
+  --ds-font-size-700: var(--ds-font-size-3xl);
+
+  /* Typography line heights */
+  --ds-line-height-none: 1;
+  --ds-line-height-tight: 1.1;
+  --ds-line-height-snug: 1.3;
+  --ds-line-height-normal: 1.5;
+  --ds-line-height-relaxed: 1.7;
+  --ds-line-height-loose: 1.9;
+
+  /* Typography letter spacing */
+  --ds-letter-spacing-tighter: -0.04em;
+  --ds-letter-spacing-tight: -0.02em;
+  --ds-letter-spacing-normal: 0;
+  --ds-letter-spacing-wide: 0.04em;
+  --ds-letter-spacing-wider: 0.08em;
+  --ds-letter-spacing-widest: 0.14em;
+
+  /* Heading presets */
+  --ds-heading-display-size: clamp(3rem, 7vw, 5.5rem);
+  --ds-heading-h1-size: clamp(2.5rem, 5vw, 4rem);
+  --ds-heading-h2-size: clamp(2rem, 4vw, 3rem);
+  --ds-heading-h3-size: 1.75rem;
+  --ds-heading-h4-size: 1.375rem;
+  --ds-heading-h5-size: 1.125rem;
+  --ds-heading-h6-size: 1rem;
+
+  /* Spacing */
+  --ds-space-0: 0;
+  --ds-space-0-5: 0.125rem;
+  --ds-space-1: 0.25rem;
+  --ds-space-1-5: 0.375rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-2-5: 0.625rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-3-5: 0.875rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-7: 1.75rem;
+  --ds-space-8: 2rem;
+  --ds-space-9: 2.25rem;
+  --ds-space-10: 2.5rem;
+  --ds-space-11: 2.75rem;
+  --ds-space-12: 3rem;
+  --ds-space-14: 3.5rem;
+  --ds-space-16: 4rem;
+  --ds-space-20: 5rem;
+  --ds-space-24: 6rem;
+  --ds-space-28: 7rem;
+  --ds-space-32: 8rem;
+
+  /* Sizing */
+  --ds-size-6: 1.5rem;
+  --ds-size-8: 2rem;
+  --ds-size-10: 2.5rem;
+  --ds-size-12: 3rem;
+  --ds-size-14: 3.5rem;
+  --ds-size-16: 4rem;
+  --ds-size-20: 5rem;
+  --ds-size-24: 6rem;
+  --ds-size-32: 8rem;
+  --ds-size-40: 10rem;
+  --ds-size-48: 12rem;
+  --ds-size-56: 14rem;
+  --ds-size-64: 16rem;
+
+  /* Layout widths */
+  --ds-container-xs: 20rem;
+  --ds-container-sm: 24rem;
+  --ds-container-md: 28rem;
+  --ds-container-lg: 32rem;
+  --ds-container-xl: 36rem;
+  --ds-container-2xl: 42rem;
+  --ds-container-3xl: 48rem;
+  --ds-container-4xl: 56rem;
+  --ds-container-5xl: 64rem;
+  --ds-container-6xl: 72rem;
+  --ds-container-7xl: 80rem;
+
+  /* Radius */
+  --ds-radius-none: 0;
+  --ds-radius-2xs: 0.25rem;
+  --ds-radius-xs: 0.375rem;
+  --ds-radius-sm: 0.5rem;
+  --ds-radius-base: 0.75rem;
+  --ds-radius-md: 0.875rem;
+  --ds-radius-lg: 1.25rem;
+  --ds-radius-xl: 1.75rem;
+  --ds-radius-2xl: 2rem;
+  --ds-radius-3xl: 2.5rem;
+  --ds-radius-pill: 999px;
+
+  /* Border widths */
+  --ds-border-width-0: 0;
+  --ds-border-width-1: 1px;
+  --ds-border-width-2: 2px;
+  --ds-border-width-4: 4px;
+
+  /* Opacity */
+  --ds-opacity-0: 0;
+  --ds-opacity-25: 0.25;
+  --ds-opacity-50: 0.5;
+  --ds-opacity-75: 0.75;
+  --ds-opacity-100: 1;
+
+  /* Shadows */
+  --ds-shadow-xs: none;
+  --ds-shadow-sm: none;
+  --ds-shadow-md: none;
+  --ds-shadow-lg: none;
+  --ds-shadow-xl: none;
+  --ds-shadow-inner: none;
+  --ds-shadow-focus: none;
+
+  /* Motion */
+  --ds-duration-instant: 0ms;
+  --ds-duration-fast: 120ms;
+  --ds-duration-normal: 180ms;
+  --ds-duration-slow: 280ms;
+  --ds-duration-slower: 420ms;
+
+  --ds-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ds-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ds-ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ds-ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
+  /* Z-index */
+  --ds-z-index-base: 0;
+  --ds-z-index-dropdown: 1000;
+  --ds-z-index-sticky: 1100;
+  --ds-z-index-fixed: 1200;
+  --ds-z-index-overlay: 1300;
+  --ds-z-index-modal: 1400;
+  --ds-z-index-popover: 1500;
+  --ds-z-index-tooltip: 1600;
+
+  /* Breakpoints */
+  --ds-breakpoint-sm: 40rem;
+  --ds-breakpoint-md: 48rem;
+  --ds-breakpoint-lg: 64rem;
+  --ds-breakpoint-xl: 80rem;
+  --ds-breakpoint-2xl: 96rem;
+
+  /* Primitive colors */
+  --ds-color-white: #ffffff;
+  --ds-color-black: #09090b;
+
+  --ds-color-neutral-0: #ffffff;
+  --ds-color-neutral-50: #e8efe3;
+  --ds-color-neutral-100: #d0d7cc;
+  --ds-color-neutral-200: #b9bfb5;
+  --ds-color-neutral-300: #a2a79e;
+  --ds-color-neutral-400: #8b8f88;
+  --ds-color-neutral-500: #747771;
+  --ds-color-neutral-600: #5c5f5a;
+  --ds-color-neutral-700: #454744;
+  --ds-color-neutral-800: #2e2f2d;
+  --ds-color-neutral-900: #171716;
+  --ds-color-neutral-950: #10100f;
+
+  --ds-color-moss-50: #e8efe3;
+  --ds-color-moss-100: #d0d7cc;
+  --ds-color-moss-200: #b9bfb5;
+  --ds-color-moss-300: #a2a79e;
+  --ds-color-moss-400: #8b8f88;
+  --ds-color-moss-500: #747771;
+  --ds-color-moss-600: #5c5f5a;
+  --ds-color-moss-700: #454744;
+  --ds-color-moss-800: #2e2f2d;
+  --ds-color-moss-900: #171716;
+
+  --ds-color-sage-50: #f5f8f3;
+  --ds-color-sage-100: #e8efe3;
+  --ds-color-sage-200: #d9e5d1;
+  --ds-color-sage-300: #bfd1b5;
+  --ds-color-sage-400: #92b188;
+  --ds-color-sage-500: #6f9069;
+  --ds-color-sage-600: #587654;
+  --ds-color-sage-700: #426148;
+  --ds-color-sage-800: #344c39;
+  --ds-color-sage-900: #26372a;
+
+  --ds-color-slate-50: #f8fafc;
+  --ds-color-slate-100: #f1f5f9;
+  --ds-color-slate-200: #e2e8f0;
+  --ds-color-slate-300: #cbd5e1;
+  --ds-color-slate-400: #94a3b8;
+  --ds-color-slate-500: #64748b;
+  --ds-color-slate-600: #475569;
+  --ds-color-slate-700: #334155;
+  --ds-color-slate-800: #1e293b;
+  --ds-color-slate-900: #0f172a;
+  --ds-color-slate-950: #020617;
+
+  --ds-color-blue-50: #eff6ff;
+  --ds-color-blue-100: #dbeafe;
+  --ds-color-blue-200: #bfdbfe;
+  --ds-color-blue-300: #93c5fd;
+  --ds-color-blue-400: #4f7cff;
+  --ds-color-blue-500: #3268ff;
+  --ds-color-blue-600: #244ee4;
+  --ds-color-blue-700: #1d3fb4;
+  --ds-color-blue-800: #19348d;
+  --ds-color-blue-900: #182e73;
+
+  --ds-color-green-50: #ecfdf3;
+  --ds-color-green-100: #d1fae5;
+  --ds-color-green-200: #a7f3d0;
+  --ds-color-green-300: #6ee7b7;
+  --ds-color-green-400: #4ba964;
+  --ds-color-green-500: #35804a;
+  --ds-color-green-600: #27683a;
+  --ds-color-green-700: #1f542f;
+
+  --ds-color-amber-50: #fffbeb;
+  --ds-color-amber-100: #fef3c7;
+  --ds-color-amber-200: #fde68a;
+  --ds-color-amber-300: #fcd34d;
+  --ds-color-amber-400: #d9a441;
+  --ds-color-amber-500: #b67f1f;
+  --ds-color-amber-600: #926416;
+  --ds-color-amber-700: #754e14;
+
+  --ds-color-red-50: #fef2f2;
+  --ds-color-red-100: #fee2e2;
+  --ds-color-red-200: #fecaca;
+  --ds-color-red-300: #fca5a5;
+  --ds-color-red-400: #e46c6c;
+  --ds-color-red-500: #ca4d4d;
+  --ds-color-red-600: #b33636;
+  --ds-color-red-700: #922d2d;
+
+  --ds-color-violet-50: #f5f3ff;
+  --ds-color-violet-100: #ede9fe;
+  --ds-color-violet-200: #ddd6fe;
+  --ds-color-violet-300: #c4b5fd;
+  --ds-color-violet-400: #a78bfa;
+  --ds-color-violet-500: #8b5cf6;
+  --ds-color-violet-600: #7c3aed;
+  --ds-color-violet-700: #6d28d9;
+
+  /* Semantic defaults */
+  --ds-color-primary: var(--ds-color-moss-50);
+  --ds-color-primary-hover: var(--ds-color-moss-100);
+  --ds-color-primary-foreground: var(--ds-color-moss-900);
+  --ds-color-secondary: #e1e9ee;
+  --ds-color-secondary-foreground: var(--ds-color-moss-900);
+  --ds-color-muted: var(--ds-color-moss-100);
+  --ds-color-muted-foreground: var(--ds-color-moss-600);
+  --ds-color-border: rgba(69, 71, 68, 0.18);
+  --ds-color-ring: rgba(92, 95, 90, 0.2);
+  --ds-color-overlay: rgba(23, 23, 22, 0.5);
+
+  /* Product-friendly aliases */
+  --primary: var(--ds-color-primary);
+  --primary-foreground: var(--ds-color-primary-foreground);
+  --secondary: var(--ds-color-secondary);
+  --secondary-foreground: var(--ds-color-secondary-foreground);
+  --muted: var(--ds-color-muted);
+  --muted-foreground: var(--ds-color-muted-foreground);
+  --border: var(--ds-color-border);
+
+  --space-2: var(--ds-space-2);
+  --space-3: var(--ds-space-3);
+  --space-4: var(--ds-space-4);
+
+  --radius: var(--ds-radius-base);
+  --font-size-sm: var(--ds-font-size-sm);
+  --font-size-base: var(--ds-font-size-base);
+  --font-weight-medium: var(--ds-font-weight-medium);
+  --shadow-sm: var(--ds-shadow-sm);
+}
