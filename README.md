@@ -1,4 +1,4 @@
-# Custom Design System Starter
+# Custom Design System Starter - WORK IN PROGRESS (April 2026)
 
 A lightweight design system starter built on native Web Components with a token-first theme layer.
 The goal is to keep the core framework-agnostic so React can sit on top later as a wrapper package,
@@ -77,4 +77,3 @@ The recommended direction is:
 - Add a React wrapper package later that imports the native entrypoint and forwards props/events
 - Let tokens and CSS variables remain shared between both layers
 
-See [`src/react/README.md`](/Users/mirabelle/Development/Custom Design System/src/react/README.md) for the wrapper approach.
