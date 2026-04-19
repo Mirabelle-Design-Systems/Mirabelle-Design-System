@@ -111,28 +111,60 @@ const SIZES = new Set(["sm", "md", "lg"]);
 const TYPES = new Set(["button", "submit", "reset"]);
 
 export class DsButton extends BaseElement {
+  static formAssociated = true;
+
   static observedAttributes = ["variant", "size", "disabled", "type", "aria-label"];
+
+  private readonly internals: ElementInternals | null;
+
+  constructor() {
+    super();
+    this.internals = typeof this.attachInternals === "function" ? this.attachInternals() : null;
+  }
+
+  get form(): HTMLFormElement | null {
+    return this.internals?.form ?? null;
+  }
+
+  get type(): string {
+    const raw = this.getAttribute("type") ?? "button";
+    return TYPES.has(raw) ? raw : "button";
+  }
 
   protected render() {
     const rawVariant = this.getAttribute("variant") ?? "primary";
     const rawSize = this.getAttribute("size") ?? "md";
-    const rawType = this.getAttribute("type") ?? "button";
 
     const variant = VARIANTS.has(rawVariant) ? rawVariant : "primary";
     const size = SIZES.has(rawSize) ? rawSize : "md";
-    const type = TYPES.has(rawType) ? rawType : "button";
+    const type = this.type;
     const disabled = this.hasAttribute("disabled");
     const ariaLabel = this.getAttribute("aria-label");
 
     this.root.innerHTML = `<style>${styles}</style>`;
 
     const button = document.createElement("button");
-    button.type = type as "button" | "submit" | "reset";
+    button.type = "button";
     button.dataset.variant = variant;
     button.dataset.size = size;
     if (disabled) button.disabled = true;
     if (ariaLabel) button.setAttribute("aria-label", ariaLabel);
     button.append(document.createElement("slot"));
+
+    button.addEventListener("click", (event) => {
+      if (this.hasAttribute("disabled")) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      const form = this.form;
+      if (!form) return;
+      if (type === "submit") {
+        form.requestSubmit();
+      } else if (type === "reset") {
+        form.reset();
+      }
+    });
 
     this.root.append(button);
   }

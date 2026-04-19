@@ -83,6 +83,8 @@ let idCounter = 0;
 const nextId = () => `ds-input-${++idCounter}`;
 
 export class DsInput extends BaseElement {
+  static formAssociated = true;
+
   static observedAttributes = [
     "label",
     "placeholder",
@@ -96,13 +98,47 @@ export class DsInput extends BaseElement {
   ];
 
   private internalValue = "";
+  private defaultValue = "";
+  private readonly internals: ElementInternals | null;
   private readonly fieldId = nextId();
   private readonly helperId = `${this.fieldId}-helper`;
   private readonly errorId = `${this.fieldId}-error`;
 
+  constructor() {
+    super();
+    this.internals = typeof this.attachInternals === "function" ? this.attachInternals() : null;
+  }
+
+  get form(): HTMLFormElement | null {
+    return this.internals?.form ?? null;
+  }
+
+  get name(): string {
+    return this.getAttribute("name") ?? "";
+  }
+
+  get type(): string {
+    return this.getAttribute("type") ?? "text";
+  }
+
+  get validity(): ValidityState | undefined {
+    return this.internals?.validity;
+  }
+
+  checkValidity(): boolean {
+    return this.internals?.checkValidity() ?? true;
+  }
+
+  reportValidity(): boolean {
+    return this.internals?.reportValidity() ?? true;
+  }
+
   connectedCallback() {
-    this.internalValue = this.getAttribute("value") ?? "";
+    const initial = this.getAttribute("value") ?? "";
+    this.internalValue = initial;
+    this.defaultValue = initial;
     super.connectedCallback();
+    this.syncFormState();
   }
 
   get value() {
@@ -115,6 +151,7 @@ export class DsInput extends BaseElement {
     if (this.getAttribute("value") !== nextValue) {
       this.setAttribute("value", nextValue);
     }
+    this.syncFormState();
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
@@ -123,6 +160,44 @@ export class DsInput extends BaseElement {
     }
 
     super.attributeChangedCallback(name, oldValue, newValue);
+    this.syncFormState();
+  }
+
+  formResetCallback() {
+    this.value = this.defaultValue;
+  }
+
+  formStateRestoreCallback(state: string | FormData | File | null) {
+    if (typeof state === "string") {
+      this.value = state;
+    }
+  }
+
+  private syncFormState() {
+    if (!this.internals) return;
+    this.internals.setFormValue(this.internalValue);
+
+    const required = this.hasAttribute("required");
+    const hasError = this.hasAttribute("error");
+    const valueMissing = required && !this.internalValue;
+
+    const inputEl = this.root.querySelector("input");
+
+    if (hasError) {
+      this.internals.setValidity(
+        { customError: true },
+        this.getAttribute("error") ?? "Invalid value",
+        inputEl ?? undefined
+      );
+    } else if (valueMissing) {
+      this.internals.setValidity(
+        { valueMissing: true },
+        "Please fill out this field.",
+        inputEl ?? undefined
+      );
+    } else {
+      this.internals.setValidity({});
+    }
   }
 
   protected render() {
@@ -202,6 +277,7 @@ export class DsInput extends BaseElement {
 
     input.addEventListener("input", () => {
       this.internalValue = input.value;
+      this.syncFormState();
       this.dispatchEvent(
         new CustomEvent("ds-input", {
           bubbles: true,
