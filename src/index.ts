@@ -5,13 +5,17 @@ import "./styles/base.css";
 import { DsBadge } from "./components/ds-badge";
 import { DsButton } from "./components/ds-button";
 import { DsCard } from "./components/ds-card";
+import { DsDialog } from "./components/ds-dialog";
 import { DsInput } from "./components/ds-input";
+import { DsToast } from "./components/ds-toast";
 
 const registry = [
   ["ds-button", DsButton],
   ["ds-card", DsCard],
   ["ds-input", DsInput],
-  ["ds-badge", DsBadge]
+  ["ds-badge", DsBadge],
+  ["ds-dialog", DsDialog],
+  ["ds-toast", DsToast]
 ] as const;
 
 export function defineDesignSystem() {
@@ -22,4 +26,4 @@ export function defineDesignSystem() {
   }
 }
 
-export { DsBadge, DsButton, DsCard, DsInput };
+export { DsBadge, DsButton, DsCard, DsDialog, DsInput, DsToast };
