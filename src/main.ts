@@ -14,7 +14,7 @@ root.innerHTML = `
     <header class="showcase-header">
       <div class="showcase-copy">
         <span class="eyebrow">Mirabelle Design System</span>
-        <h1>Mirabelle Design System</h1>
+        <h1>Custom Design System - Work In Progress</h1>
         <p>
           This is my design system. It takes some visual inspiration from iOS, but the tokens,
           colors, type, spacing, and component decisions are mine and built around the way I want
