@@ -15,6 +15,11 @@ not as the source of truth.
   - `ds-badge`
 - A demo page showing how the tokens and components work together
 
+### Roadmap
+
+- `ds-dialog` and `ds-toast` are shown on the demo page as static CSS previews only.
+  They are not yet implemented as components.
+
 ## Project structure
 
 ```txt
@@ -30,8 +35,8 @@ src/
 
 The system uses two layers:
 
-1. Primitive tokens in [`src/styles/tokens.css`](/Users/mirabelle/Development/Custom Design System/src/styles/tokens.css)
-2. Semantic theme tokens in [`src/styles/themes.css`](/Users/mirabelle/Development/Custom Design System/src/styles/themes.css)
+1. Primitive tokens in [`src/styles/tokens.css`](src/styles/tokens.css)
+2. Semantic theme tokens in [`src/styles/themes.css`](src/styles/themes.css)
 
 Components only consume semantic tokens like `--ds-color-bg-elevated` or
 `--ds-color-text-secondary`. That means you can refine the palette later without rewriting every

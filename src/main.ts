@@ -225,9 +225,9 @@ root.innerHTML = `
         <article class="ios-card priority-card">
           <div class="component-overview-head">
             <h3>Dialog</h3>
-            <span class="variant-pill">2 variants</span>
+            <span class="variant-pill">Preview only</span>
           </div>
-          <p class="component-brief">Modal overlay with focus trap and keyboard dismissal. Uses overlay token for backdrop, structured heading, and action layout for confirmation flows.</p>
+          <p class="component-brief">Roadmap component. Styles shown below are static previews, not a built custom element yet. Target: modal overlay with focus trap and keyboard dismissal.</p>
           <div class="variant-preview-column">
             <div class="preview-dialog">
               <strong>Confirm action</strong>
@@ -243,9 +243,9 @@ root.innerHTML = `
         <article class="ios-card priority-card">
           <div class="component-overview-head">
             <h3>Toast</h3>
-            <span class="variant-pill">4 variants</span>
+            <span class="variant-pill">Preview only</span>
           </div>
-          <p class="component-brief">Temporary notification. Uses semantic color tokens for success, warning, error, and info with auto-dismiss, action support, and screen reader announcement.</p>
+          <p class="component-brief">Roadmap component. Styles shown below are static previews, not a built custom element yet. Target: temporary notification with auto-dismiss and polite screen-reader announcement.</p>
           <div class="variant-preview-column">
             <div class="preview-toast preview-toast-success">Success toast</div>
             <div class="preview-toast preview-toast-warning">Warning toast</div>

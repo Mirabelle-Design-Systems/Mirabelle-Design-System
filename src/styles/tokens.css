@@ -142,14 +142,14 @@
   --ds-opacity-75: 0.75;
   --ds-opacity-100: 1;
 
-  /* Shadows */
-  --ds-shadow-xs: none;
-  --ds-shadow-sm: none;
-  --ds-shadow-md: none;
-  --ds-shadow-lg: none;
-  --ds-shadow-xl: none;
-  --ds-shadow-inner: none;
-  --ds-shadow-focus: none;
+  /* Shadows (light-mode defaults; dark mode overrides in themes.css) */
+  --ds-shadow-xs: 0 1px 2px rgba(17, 24, 39, 0.04);
+  --ds-shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.06), 0 1px 3px rgba(17, 24, 39, 0.04);
+  --ds-shadow-md: 0 4px 8px rgba(17, 24, 39, 0.06), 0 2px 4px rgba(17, 24, 39, 0.04);
+  --ds-shadow-lg: 0 12px 24px rgba(17, 24, 39, 0.08), 0 4px 8px rgba(17, 24, 39, 0.05);
+  --ds-shadow-xl: 0 24px 48px rgba(17, 24, 39, 0.12), 0 8px 16px rgba(17, 24, 39, 0.06);
+  --ds-shadow-inner: inset 0 1px 2px rgba(17, 24, 39, 0.06);
+  --ds-shadow-focus: 0 0 0 3px var(--ds-color-ring);
 
   /* Motion */
   --ds-duration-instant: 0ms;
