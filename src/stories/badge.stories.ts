@@ -8,9 +8,11 @@ type Args = {
 };
 
 const meta: Meta<Args> = {
-  title: "Components/Badge",
+  title: "Mirabelle DS/Badge",
   tags: ["autodocs"],
   argTypes: {
+    label: { control: "text" },
+    live: { control: "boolean" },
     tone: {
       control: "select",
       options: ["neutral", "accent", "success", "warning", "danger", "info"]
@@ -18,7 +20,7 @@ const meta: Meta<Args> = {
   },
   args: { tone: "neutral", label: "Stable", live: false },
   render: (args) => html`
-    <ds-badge tone=${args.tone} ?live=${args.live}>${args.label}</ds-badge>
+    <mirabelle-ds-badge tone=${args.tone} ?live=${args.live}>${args.label}</mirabelle-ds-badge>
   `
 };
 
@@ -26,21 +28,21 @@ export default meta;
 
 type Story = StoryObj<Args>;
 
-export const Neutral: Story = {};
+export const Playground: Story = {};
 
-export const AllTones: Story = {
+export const ExamplesAllTones: Story = {
   render: () => html`
     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <ds-badge tone="neutral">Neutral</ds-badge>
-      <ds-badge tone="accent">Accent</ds-badge>
-      <ds-badge tone="success">Success</ds-badge>
-      <ds-badge tone="warning">Warning</ds-badge>
-      <ds-badge tone="danger">Danger</ds-badge>
-      <ds-badge tone="info">Info</ds-badge>
+      <mirabelle-ds-badge tone="neutral">Neutral</mirabelle-ds-badge>
+      <mirabelle-ds-badge tone="accent">Accent</mirabelle-ds-badge>
+      <mirabelle-ds-badge tone="success">Success</mirabelle-ds-badge>
+      <mirabelle-ds-badge tone="warning">Warning</mirabelle-ds-badge>
+      <mirabelle-ds-badge tone="danger">Danger</mirabelle-ds-badge>
+      <mirabelle-ds-badge tone="info">Info</mirabelle-ds-badge>
     </div>
   `
 };
 
-export const LiveRegion: Story = {
+export const ExamplesLiveRegion: Story = {
   args: { tone: "success", label: "Saved", live: true }
 };

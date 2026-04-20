@@ -1,9 +1,7 @@
-import { BaseElement } from "./base-element";
-import { sharedStyles } from "./shared-styles";
+import { LitElement, html, css, nothing } from "lit";
+import { sharedStyleSheet } from "./shared-style-sheet";
 
-const styles = `
-  ${sharedStyles}
-
+const badgeStyles = css`
   :host {
     display: inline-flex;
   }
@@ -60,25 +58,28 @@ const styles = `
 
 const TONES = new Set(["neutral", "accent", "success", "warning", "danger", "info"]);
 
-export class DsBadge extends BaseElement {
-  static observedAttributes = ["tone", "live"];
+export class DsBadge extends LitElement {
+  static styles = [sharedStyleSheet, badgeStyles];
 
-  protected render() {
-    const rawTone = this.getAttribute("tone") ?? "neutral";
-    const tone = TONES.has(rawTone) ? rawTone : "neutral";
-    const live = this.hasAttribute("live");
+  static properties = {
+    tone: { type: String, reflect: true },
+    live: { type: Boolean, reflect: true }
+  };
 
-    this.root.innerHTML = `<style>${styles}</style>`;
+  tone = "neutral";
+  live = false;
 
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.dataset.tone = tone;
-    if (live) {
-      badge.setAttribute("role", "status");
-      badge.setAttribute("aria-live", "polite");
-    }
-    badge.append(document.createElement("slot"));
-
-    this.root.append(badge);
+  render() {
+    const tone = TONES.has(this.tone) ? this.tone : "neutral";
+    return html`
+      <span
+        class="badge"
+        data-tone=${tone}
+        role=${this.live ? "status" : nothing}
+        aria-live=${this.live ? "polite" : nothing}
+      >
+        <slot></slot>
+      </span>
+    `;
   }
 }

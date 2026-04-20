@@ -1,9 +1,8 @@
-import { BaseElement } from "./base-element";
-import { sharedStyles } from "./shared-styles";
+import { LitElement, html, css } from "lit";
+import type { PropertyValues } from "lit";
+import { sharedStyleSheet } from "./shared-style-sheet";
 
-const styles = `
-  ${sharedStyles}
-
+const inputStyles = css`
   .field {
     display: grid;
     gap: var(--ds-space-2);
@@ -80,45 +79,51 @@ const TYPE_WHITELIST = new Set([
 ]);
 
 let idCounter = 0;
-const nextId = () => `ds-input-${++idCounter}`;
+const nextId = () => `mirabelle-ds-input-${++idCounter}`;
 
-export class DsInput extends BaseElement {
+export class DsInput extends LitElement {
   static formAssociated = true;
 
-  static observedAttributes = [
-    "label",
-    "placeholder",
-    "value",
-    "helper",
-    "type",
-    "error",
-    "required",
-    "disabled",
-    "name"
-  ];
+  static styles = [sharedStyleSheet, inputStyles];
 
-  private internalValue = "";
+  static properties = {
+    label: { type: String, reflect: true },
+    placeholder: { type: String, reflect: true },
+    value: { type: String, reflect: true },
+    helper: { type: String, reflect: true },
+    error: { type: String, reflect: true },
+    inputType: { attribute: "type", type: String, reflect: true },
+    required: { type: Boolean, reflect: true },
+    disabled: { type: Boolean, reflect: true },
+    name: { type: String, reflect: true }
+  };
+
+  label = "";
+  placeholder = "";
+  value = "";
+  helper = "";
+  error = "";
+  inputType = "text";
+  required = false;
+  disabled = false;
+  name = "";
+
   private defaultValue = "";
   private readonly internals: ElementInternals | null;
-  private readonly fieldId = nextId();
-  private readonly helperId = `${this.fieldId}-helper`;
-  private readonly errorId = `${this.fieldId}-error`;
+  private readonly fieldId: string;
+  private readonly helperId: string;
+  private readonly errorId: string;
 
   constructor() {
     super();
     this.internals = typeof this.attachInternals === "function" ? this.attachInternals() : null;
+    this.fieldId = nextId();
+    this.helperId = `${this.fieldId}-helper`;
+    this.errorId = `${this.fieldId}-error`;
   }
 
   get form(): HTMLFormElement | null {
     return this.internals?.form ?? null;
-  }
-
-  get name(): string {
-    return this.getAttribute("name") ?? "";
-  }
-
-  get type(): string {
-    return this.getAttribute("type") ?? "text";
   }
 
   get validity(): ValidityState | undefined {
@@ -133,169 +138,130 @@ export class DsInput extends BaseElement {
     return this.internals?.reportValidity() ?? true;
   }
 
-  connectedCallback() {
-    const initial = this.getAttribute("value") ?? "";
-    this.internalValue = initial;
-    this.defaultValue = initial;
+  connectedCallback(): void {
     super.connectedCallback();
+    const initial = this.getAttribute("value") ?? "";
+    this.value = initial;
+    this.defaultValue = initial;
     this.syncFormState();
   }
 
-  get value() {
-    return this.internalValue;
-  }
-
-  set value(nextValue: string) {
-    this.internalValue = nextValue;
-
-    if (this.getAttribute("value") !== nextValue) {
-      this.setAttribute("value", nextValue);
-    }
-    this.syncFormState();
-  }
-
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-    if (name === "value" && oldValue !== newValue) {
-      this.internalValue = newValue ?? "";
-    }
-
-    super.attributeChangedCallback(name, oldValue, newValue);
-    this.syncFormState();
-  }
-
-  formResetCallback() {
+  formResetCallback(): void {
     this.value = this.defaultValue;
   }
 
-  formStateRestoreCallback(state: string | FormData | File | null) {
+  formStateRestoreCallback(state: string | FormData | File | null): void {
     if (typeof state === "string") {
       this.value = state;
     }
   }
 
-  private syncFormState() {
+  private syncFormState(inputEl: HTMLInputElement | null = null): void {
     if (!this.internals) return;
-    this.internals.setFormValue(this.internalValue);
+    this.internals.setFormValue(this.value);
 
-    const required = this.hasAttribute("required");
-    const hasError = this.hasAttribute("error");
-    const valueMissing = required && !this.internalValue;
+    const required = this.required;
+    const hasError = !!this.error;
+    const valueMissing = required && !this.value;
 
-    const inputEl = this.root.querySelector("input");
+    const input = inputEl ?? (this.renderRoot?.querySelector("input") as HTMLInputElement | null);
 
     if (hasError) {
       this.internals.setValidity(
         { customError: true },
-        this.getAttribute("error") ?? "Invalid value",
-        inputEl ?? undefined
+        this.error,
+        input ?? undefined
       );
     } else if (valueMissing) {
       this.internals.setValidity(
         { valueMissing: true },
         "Please fill out this field.",
-        inputEl ?? undefined
+        input ?? undefined
       );
     } else {
       this.internals.setValidity({});
     }
   }
 
-  protected render() {
-    const rawType = this.getAttribute("type") ?? "text";
-    const type = TYPE_WHITELIST.has(rawType) ? rawType : "text";
+  private onInput(e: Event): void {
+    const input = e.target as HTMLInputElement;
+    this.value = input.value;
+    this.syncFormState(input);
+    this.dispatchEvent(
+      new CustomEvent("mirabelle-ds-field-input", {
+        bubbles: true,
+        composed: true,
+        detail: { value: input.value }
+      })
+    );
+  }
 
-    const label = this.getAttribute("label") ?? "";
-    const placeholder = this.getAttribute("placeholder") ?? "";
-    const helper = this.getAttribute("helper") ?? "";
-    const error = this.getAttribute("error") ?? "";
-    const required = this.hasAttribute("required");
-    const disabled = this.hasAttribute("disabled");
-    const name = this.getAttribute("name") ?? "";
+  private onChange(e: Event): void {
+    const input = e.target as HTMLInputElement;
+    this.value = input.value;
+    this.dispatchEvent(
+      new CustomEvent("mirabelle-ds-change", {
+        bubbles: true,
+        composed: true,
+        detail: { value: input.value }
+      })
+    );
+  }
 
-    this.root.innerHTML = `<style>${styles}</style>`;
-
-    const field = document.createElement("div");
-    field.className = "field";
-
-    if (label) {
-      const labelEl = document.createElement("label");
-      labelEl.setAttribute("for", this.fieldId);
-      labelEl.textContent = label;
-      if (required) {
-        const marker = document.createElement("span");
-        marker.className = "required-marker";
-        marker.setAttribute("aria-hidden", "true");
-        marker.textContent = "*";
-        labelEl.append(marker);
-      }
-      field.append(labelEl);
+  updated(changed: PropertyValues): void {
+    super.updated(changed);
+    if (
+      changed.has("value") ||
+      changed.has("error") ||
+      changed.has("required") ||
+      changed.has("disabled")
+    ) {
+      this.syncFormState();
     }
+  }
 
-    const input = document.createElement("input");
-    input.id = this.fieldId;
-    input.type = type;
-    input.value = this.internalValue;
-    if (placeholder) input.placeholder = placeholder;
-    if (name) input.name = name;
-    if (required) input.required = true;
-    if (disabled) input.disabled = true;
-    if (!label) {
-      const ariaLabel = this.getAttribute("aria-label");
-      if (ariaLabel) input.setAttribute("aria-label", ariaLabel);
-    }
-
+  render() {
+    const type = TYPE_WHITELIST.has(this.inputType) ? this.inputType : "text";
     const describedBy: string[] = [];
-    if (error) {
-      input.setAttribute("aria-invalid", "true");
+    if (this.error) {
       describedBy.push(this.errorId);
-    } else if (helper) {
+    } else if (this.helper) {
       describedBy.push(this.helperId);
     }
-    if (describedBy.length) {
-      input.setAttribute("aria-describedby", describedBy.join(" "));
-    }
+    const ariaLabel = this.getAttribute("aria-label");
 
-    field.append(input);
-
-    if (error) {
-      const errorEl = document.createElement("div");
-      errorEl.className = "helper";
-      errorEl.dataset.variant = "error";
-      errorEl.id = this.errorId;
-      errorEl.setAttribute("role", "alert");
-      errorEl.textContent = error;
-      field.append(errorEl);
-    } else if (helper) {
-      const helperEl = document.createElement("div");
-      helperEl.className = "helper";
-      helperEl.id = this.helperId;
-      helperEl.textContent = helper;
-      field.append(helperEl);
-    }
-
-    this.root.append(field);
-
-    input.addEventListener("input", () => {
-      this.internalValue = input.value;
-      this.syncFormState();
-      this.dispatchEvent(
-        new CustomEvent("ds-input", {
-          bubbles: true,
-          composed: true,
-          detail: { value: input.value }
-        })
-      );
-    });
-
-    input.addEventListener("change", () => {
-      this.setAttribute("value", input.value);
-      this.dispatchEvent(
-        new CustomEvent("ds-change", {
-          bubbles: true,
-          composed: true,
-          detail: { value: input.value }
-        })
-      );
-    });
+    return html`
+      <div class="field">
+        ${this.label
+          ? html`<label for=${this.fieldId}>
+              ${this.label}
+              ${this.required
+                ? html`<span class="required-marker" aria-hidden="true">*</span>`
+                : null}
+            </label>`
+          : null}
+        <input
+          id=${this.fieldId}
+          type=${type}
+          .value=${this.value}
+          placeholder=${this.placeholder || undefined}
+          name=${this.name || undefined}
+          ?required=${this.required}
+          ?disabled=${this.disabled}
+          aria-label=${!this.label && ariaLabel ? ariaLabel : undefined}
+          aria-invalid=${this.error ? "true" : undefined}
+          aria-describedby=${describedBy.length ? describedBy.join(" ") : undefined}
+          @input=${this.onInput}
+          @change=${this.onChange}
+        />
+        ${this.error
+          ? html`<div class="helper" data-variant="error" id=${this.errorId} role="alert">
+              ${this.error}
+            </div>`
+          : this.helper
+            ? html`<div class="helper" id=${this.helperId}>${this.helper}</div>`
+            : null}
+      </div>
+    `;
   }
 }

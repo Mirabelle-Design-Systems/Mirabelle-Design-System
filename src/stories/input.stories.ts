@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/web-components";
-import { expect, userEvent, within } from "@storybook/test";
+import { expect, userEvent } from "@storybook/test";
 import { html } from "lit";
 
 type Args = {
@@ -14,9 +14,21 @@ type Args = {
 };
 
 const meta: Meta<Args> = {
-  title: "Components/Input",
+  title: "Mirabelle DS/Input",
   tags: ["autodocs"],
+  parameters: {
+    actions: {
+      handles: ["mirabelle-ds-field-input", "mirabelle-ds-change"]
+    }
+  },
   argTypes: {
+    label: { control: "text" },
+    placeholder: { control: "text" },
+    helper: { control: "text" },
+    error: { control: "text" },
+    required: { control: "boolean" },
+    disabled: { control: "boolean" },
+    value: { control: "text" },
     type: {
       control: "select",
       options: ["text", "email", "password", "number", "search", "tel", "url"]
@@ -33,7 +45,7 @@ const meta: Meta<Args> = {
     value: ""
   },
   render: (args) => html`
-    <ds-input
+    <mirabelle-ds-input
       label=${args.label}
       placeholder=${args.placeholder}
       helper=${args.helper}
@@ -43,7 +55,7 @@ const meta: Meta<Args> = {
       ?required=${args.required}
       ?disabled=${args.disabled}
       style="max-width: 18rem;"
-    ></ds-input>
+    ></mirabelle-ds-input>
   `
 };
 
@@ -51,28 +63,28 @@ export default meta;
 
 type Story = StoryObj<Args>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const WithHelper: Story = {
+export const ExamplesWithHelper: Story = {
   args: { helper: "Use the email on file with your account." }
 };
 
-export const WithError: Story = {
+export const ExamplesWithError: Story = {
   args: { error: "Enter a valid email address." }
 };
 
-export const Required: Story = {
+export const ExamplesRequired: Story = {
   args: { required: true, label: "Full name", helper: "Required field" }
 };
 
-export const Disabled: Story = {
+export const ExamplesDisabled: Story = {
   args: { disabled: true, value: "locked@example.com" }
 };
 
 export const LabelAssociation: Story = {
   args: { label: "Project name", helper: "Lowercase letters and dashes only." },
   play: async ({ canvasElement }) => {
-    const host = canvasElement.querySelector("ds-input") as HTMLElement;
+    const host = canvasElement.querySelector("mirabelle-ds-input") as HTMLElement;
     const shadow = host.shadowRoot!;
     const label = shadow.querySelector("label")!;
     const input = shadow.querySelector("input")!;
@@ -84,7 +96,7 @@ export const LabelAssociation: Story = {
 export const ErrorAnnounces: Story = {
   args: { error: "Value is required", required: true },
   play: async ({ canvasElement }) => {
-    const host = canvasElement.querySelector("ds-input") as HTMLElement;
+    const host = canvasElement.querySelector("mirabelle-ds-input") as HTMLElement;
     const shadow = host.shadowRoot!;
     const input = shadow.querySelector("input")!;
     const alert = shadow.querySelector('[role="alert"]');
@@ -96,7 +108,7 @@ export const ErrorAnnounces: Story = {
 export const TypingFires: Story = {
   args: { label: "Search", type: "search", placeholder: "Search" },
   play: async ({ canvasElement }) => {
-    const host = canvasElement.querySelector("ds-input") as HTMLElement;
+    const host = canvasElement.querySelector("mirabelle-ds-input") as HTMLElement;
     const input = host.shadowRoot!.querySelector("input")!;
     await userEvent.click(input);
     await userEvent.keyboard("mirabelle");

@@ -832,20 +832,102 @@ img {
   font-weight: 600;
 }
 
+.builder-panel .ios-field input,
+.builder-panel .ios-field select,
+.builder-panel .ios-field textarea,
 .builder-form .ios-field input,
+.builder-form .ios-field select,
 .builder-form .ios-field textarea {
   width: 100%;
-  min-height: 44px;
-  padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--mirabelle-ds-color-border) 80%, white);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--mirabelle-ds-color-background) 98%, var(--mirabelle-ds-color-surface));
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--mirabelle-ds-color-border-light) 90%, white);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--mirabelle-ds-color-background) 97%, var(--mirabelle-ds-color-surface));
   color: var(--mirabelle-ds-color-text);
+  font-size: 16px;
+  font-weight: 500;
 }
 
+.builder-panel .ios-field select,
+.builder-form .ios-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 3rem;
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 72%, transparent);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--mirabelle-ds-color-text-secondary) 50%),
+    linear-gradient(135deg, var(--mirabelle-ds-color-text-secondary) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.35rem) calc(50% - 0.18rem),
+    calc(100% - 0.95rem) calc(50% - 0.18rem);
+  background-size: 0.44rem 0.44rem, 0.44rem 0.44rem;
+  background-repeat: no-repeat;
+}
+
+.builder-panel .ios-field select:focus-visible,
+.builder-form .ios-field select:focus-visible {
+  outline: none;
+  border-color: var(--mirabelle-ds-color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mirabelle-ds-color-primary) 24%, transparent);
+}
+
+.builder-panel .ios-field textarea,
 .builder-form .ios-field textarea {
   min-height: 92px;
   resize: vertical;
+}
+
+.component-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--mirabelle-ds-color-text);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.component-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--mirabelle-ds-color-border) 80%, white);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--mirabelle-ds-color-background) 98%, var(--mirabelle-ds-color-surface));
+  display: grid;
+  place-items: center;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.component-toggle input[type="checkbox"]::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border: 2px solid transparent;
+  border-right-color: white;
+  border-bottom-color: white;
+  transform: rotate(45deg) translate(-1px, -1px) scale(0);
+  transition: transform 140ms ease;
+}
+
+.component-toggle input[type="checkbox"]:checked {
+  border-color: transparent;
+  background: var(--mirabelle-ds-color-primary);
+}
+
+.component-toggle input[type="checkbox"]:checked::after {
+  transform: rotate(45deg) translate(-1px, -1px) scale(1);
+}
+
+.component-toggle input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mirabelle-ds-color-primary) 24%, transparent);
 }
 
 .token-accordion-list {

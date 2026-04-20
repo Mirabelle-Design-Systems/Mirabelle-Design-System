@@ -10,14 +10,15 @@ import { DsInput } from "./components/ds-input";
 import { DsToast } from "./components/ds-toast";
 
 const registry = [
-  ["ds-button", DsButton],
-  ["ds-card", DsCard],
-  ["ds-input", DsInput],
-  ["ds-badge", DsBadge],
-  ["ds-dialog", DsDialog],
-  ["ds-toast", DsToast]
+  ["mirabelle-ds-button", DsButton],
+  ["mirabelle-ds-card", DsCard],
+  ["mirabelle-ds-input", DsInput],
+  ["mirabelle-ds-badge", DsBadge],
+  ["mirabelle-ds-dialog", DsDialog],
+  ["mirabelle-ds-toast", DsToast]
 ] as const;
 
+/** Registers every Mirabelle DS custom element (`mirabelle-ds-*`) once on `customElements`. Safe to call repeatedly (skips tags that are already defined). */
 export function defineDesignSystem() {
   for (const [tagName, component] of registry) {
     if (!customElements.get(tagName)) {

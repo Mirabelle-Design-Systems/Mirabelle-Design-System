@@ -1,9 +1,8 @@
-import { BaseElement } from "./base-element";
-import { sharedStyles } from "./shared-styles";
+import { LitElement, html, css } from "lit";
+import type { PropertyValues } from "lit";
+import { sharedStyleSheet } from "./shared-style-sheet";
 
-const styles = `
-  ${sharedStyles}
-
+const toastStyles = css`
   :host {
     display: block;
   }
@@ -35,15 +34,31 @@ const styles = `
     background: var(--_text-secondary);
   }
 
-  :host([tone="success"]) .icon { background: var(--_success); }
-  :host([tone="warning"]) .icon { background: var(--_warning); }
-  :host([tone="danger"]) .icon { background: var(--_danger); }
-  :host([tone="info"]) .icon { background: var(--ds-color-info); }
+  :host([tone="success"]) .icon {
+    background: var(--_success);
+  }
+  :host([tone="warning"]) .icon {
+    background: var(--_warning);
+  }
+  :host([tone="danger"]) .icon {
+    background: var(--_danger);
+  }
+  :host([tone="info"]) .icon {
+    background: var(--ds-color-info);
+  }
 
-  :host([tone="success"]) .toast { border-color: color-mix(in srgb, var(--_success) 40%, var(--_border-color)); }
-  :host([tone="warning"]) .toast { border-color: color-mix(in srgb, var(--_warning) 40%, var(--_border-color)); }
-  :host([tone="danger"]) .toast { border-color: color-mix(in srgb, var(--_danger) 40%, var(--_border-color)); }
-  :host([tone="info"]) .toast { border-color: color-mix(in srgb, var(--ds-color-info) 40%, var(--_border-color)); }
+  :host([tone="success"]) .toast {
+    border-color: color-mix(in srgb, var(--_success) 40%, var(--_border-color));
+  }
+  :host([tone="warning"]) .toast {
+    border-color: color-mix(in srgb, var(--_warning) 40%, var(--_border-color));
+  }
+  :host([tone="danger"]) .toast {
+    border-color: color-mix(in srgb, var(--_danger) 40%, var(--_border-color));
+  }
+  :host([tone="info"]) .toast {
+    border-color: color-mix(in srgb, var(--ds-color-info) 40%, var(--_border-color));
+  }
 
   .content {
     display: grid;
@@ -77,7 +92,10 @@ const styles = `
     line-height: 1;
   }
 
-  .close:hover { color: var(--_text-primary); background: var(--_surface-subtle); }
+  .close:hover {
+    color: var(--_text-primary);
+    background: var(--_surface-subtle);
+  }
   .close:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px var(--ds-color-ring);
@@ -85,122 +103,136 @@ const styles = `
 
   @media (prefers-reduced-motion: no-preference) {
     :host([open]) .toast {
-      animation: ds-toast-in var(--ds-duration-normal) var(--ds-ease-emphasized);
+      animation: mirabelle-ds-toast-in var(--ds-duration-normal) var(--ds-ease-emphasized);
     }
   }
 
-  @keyframes ds-toast-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: none; }
+  @keyframes mirabelle-ds-toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 `;
 
 const TONES = new Set(["neutral", "success", "warning", "danger", "info"]);
 
-export class DsToast extends BaseElement {
-  static observedAttributes = ["open", "tone", "duration", "heading"];
+export class DsToast extends LitElement {
+  static styles = [sharedStyleSheet, toastStyles];
 
-  private dismissTimer: number | null = null;
+  static properties = {
+    toastOpen: { attribute: "open", type: Boolean, reflect: true },
+    tone: { type: String, reflect: true },
+    duration: { attribute: "duration", type: Number },
+    heading: { type: String, reflect: true }
+  };
+
+  toastOpen = false;
+  tone = "neutral";
+  duration = 5000;
+  heading = "";
+
+  private dismissTimer: ReturnType<typeof setTimeout> | null = null;
 
   show(): void {
-    if (!this.hasAttribute("open")) {
-      this.setAttribute("open", "");
+    if (!this.toastOpen) {
+      this.toastOpen = true;
     }
   }
 
   close(): void {
-    if (this.hasAttribute("open")) {
-      this.removeAttribute("open");
+    if (this.toastOpen) {
+      this.toastOpen = false;
     }
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-    if (oldValue === newValue) return;
-    if (name === "open") {
-      this.syncOpen();
-    }
-    super.attributeChangedCallback(name, oldValue, newValue);
-  }
-
-  private syncOpen() {
-    this.clearTimer();
-    const isOpen = this.hasAttribute("open");
-    this.hidden = !isOpen;
-    if (isOpen) {
-      this.dispatchEvent(new CustomEvent("ds-toast-open", { bubbles: true, composed: true }));
-      const durationAttr = this.getAttribute("duration");
-      const duration = durationAttr === null ? 5000 : Number(durationAttr);
-      if (Number.isFinite(duration) && duration > 0) {
-        this.dismissTimer = window.setTimeout(() => this.close(), duration);
-      }
-    } else {
-      this.dispatchEvent(new CustomEvent("ds-toast-close", { bubbles: true, composed: true }));
-    }
-  }
-
-  private clearTimer() {
+  private clearTimer(): void {
     if (this.dismissTimer !== null) {
       clearTimeout(this.dismissTimer);
       this.dismissTimer = null;
     }
   }
 
-  connectedCallback() {
+  private syncOpen(): void {
+    this.clearTimer();
+    const isOpen = this.toastOpen;
+    this.hidden = !isOpen;
+    if (isOpen) {
+      this.dispatchEvent(new CustomEvent("mirabelle-ds-toast-open", { bubbles: true, composed: true }));
+      const d = this.duration;
+      if (Number.isFinite(d) && d > 0) {
+        this.dismissTimer = window.setTimeout(() => this.close(), d);
+      }
+    } else {
+      this.dispatchEvent(new CustomEvent("mirabelle-ds-toast-close", { bubbles: true, composed: true }));
+    }
+  }
+
+  private applyA11yHost(): void {
+    const rawTone = this.tone ?? "neutral";
+    const tone = TONES.has(rawTone) ? rawTone : "neutral";
+    if (this.getAttribute("tone") !== tone) {
+      this.setAttribute("tone", tone);
+    }
+    const isDanger = tone === "danger" || tone === "warning";
+    this.setAttribute("role", isDanger ? "alert" : "status");
+    this.setAttribute("aria-live", isDanger ? "assertive" : "polite");
+    this.setAttribute("aria-atomic", "true");
+  }
+
+  willUpdate(changed: PropertyValues): void {
+    super.willUpdate(changed);
+    if (changed.has("tone") || changed.has("toastOpen")) {
+      this.applyA11yHost();
+    }
+  }
+
+  updated(changed: PropertyValues): void {
+    super.updated(changed);
+    if (changed.has("toastOpen")) {
+      this.syncOpen();
+    }
+  }
+
+  connectedCallback(): void {
     super.connectedCallback();
+    const attr = this.getAttribute("duration");
+    if (attr !== null) {
+      const n = Number(attr);
+      if (Number.isFinite(n)) this.duration = n;
+    }
+    this.applyA11yHost();
     this.syncOpen();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
     this.clearTimer();
   }
 
-  protected render() {
-    const rawTone = this.getAttribute("tone") ?? "neutral";
-    const tone = TONES.has(rawTone) ? rawTone : "neutral";
-    this.setAttribute("tone", tone);
+  render() {
+    const headingText = this.heading;
 
-    const isDanger = tone === "danger" || tone === "warning";
-    const role = isDanger ? "alert" : "status";
-    const live = isDanger ? "assertive" : "polite";
-
-    this.setAttribute("role", role);
-    this.setAttribute("aria-live", live);
-    this.setAttribute("aria-atomic", "true");
-
-    this.root.innerHTML = `<style>${styles}</style>`;
-
-    const toast = document.createElement("div");
-    toast.className = "toast";
-
-    const icon = document.createElement("span");
-    icon.className = "icon";
-    icon.setAttribute("aria-hidden", "true");
-    toast.append(icon);
-
-    const content = document.createElement("div");
-    content.className = "content";
-
-    const headingText = this.getAttribute("heading") ?? "";
-    const headingEl = document.createElement("div");
-    headingEl.className = "title";
-    if (headingText) headingEl.textContent = headingText;
-    content.append(headingEl);
-
-    const body = document.createElement("div");
-    body.className = "body";
-    body.append(document.createElement("slot"));
-    content.append(body);
-
-    toast.append(content);
-
-    const closeBtn = document.createElement("button");
-    closeBtn.type = "button";
-    closeBtn.className = "close";
-    closeBtn.setAttribute("aria-label", "Dismiss notification");
-    closeBtn.textContent = "\u00D7";
-    closeBtn.addEventListener("click", () => this.close());
-    toast.append(closeBtn);
-
-    this.root.append(toast);
+    return html`
+      <div class="toast">
+        <span class="icon" aria-hidden="true"></span>
+        <div class="content">
+          <div class="title">${headingText}</div>
+          <div class="body"><slot></slot></div>
+        </div>
+        <button
+          type="button"
+          class="close"
+          aria-label="Dismiss notification"
+          @click=${() => this.close()}
+        >
+          ×
+        </button>
+      </div>
+    `;
   }
 }
