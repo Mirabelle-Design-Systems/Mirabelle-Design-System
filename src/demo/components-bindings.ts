@@ -28,6 +28,7 @@ type LiveBadgeEl = HTMLElement & {
 
 type LiveDialogEl = HTMLElement & {
   headingLevel: string;
+  dismissible: boolean;
   open: () => void;
 };
 
@@ -189,8 +190,7 @@ export function bindComponentsControls(container: HTMLElement): void {
   ) {
     const syncDialog = () => {
       liveDialog.headingLevel = liveDialogHeading.value;
-      liveDialog.setAttribute("heading-level", liveDialogHeading.value);
-      liveDialog.setAttribute("dismissible", liveDialogDismissible.checked ? "true" : "false");
+      liveDialog.dismissible = liveDialogDismissible.checked;
       liveDialogTitleSlot.textContent = liveDialogTitle.value || "Confirm settings";
       liveDialogBodySlot.textContent = liveDialogBody.value || "This dialog is controlled by live props.";
     };

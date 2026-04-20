@@ -131,12 +131,21 @@ export class DsDialog extends LitElement {
   static properties = {
     dialogOpen: { attribute: "open", type: Boolean, reflect: true },
     headingLevel: { attribute: "heading-level", type: String, reflect: true },
-    label: { type: String, reflect: true }
+    label: { type: String, reflect: true },
+    dismissible: {
+      attribute: "dismissible",
+      reflect: true,
+      converter: {
+        fromAttribute: (value: string | null) => value === null || value !== "false",
+        toAttribute: (value: boolean) => (value ? null : "false")
+      }
+    }
   };
 
   dialogOpen = false;
   headingLevel = "2";
   label = "";
+  dismissible = true;
 
   private previousActive: Element | null = null;
   private dialogEl: HTMLDialogElement | null = null;
@@ -175,23 +184,17 @@ export class DsDialog extends LitElement {
   };
 
   private handleCancel = (event: Event): void => {
-    if (!this.isDismissible()) {
+    if (!this.dismissible) {
       event.preventDefault();
     }
   };
 
   private handleBackdropClick = (event: MouseEvent): void => {
-    if (!this.isDismissible() || !this.dialogEl) return;
+    if (!this.dismissible || !this.dialogEl) return;
     if (event.target === this.dialogEl) {
       this.close();
     }
   };
-
-  private isDismissible(): boolean {
-    const raw = this.getAttribute("dismissible");
-    if (raw === null) return true;
-    return raw !== "false";
-  }
 
   private syncOpenState(): void {
     if (!this.dialogEl) return;
@@ -267,7 +270,7 @@ export class DsDialog extends LitElement {
         <div class="body-wrapper">
           <header>
             ${this.headingSlot(level)}
-            ${this.isDismissible()
+            ${this.dismissible
               ? html`<button
                   type="button"
                   class="close"
