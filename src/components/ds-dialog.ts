@@ -1,9 +1,8 @@
-import { BaseElement } from "./base-element";
-import { sharedStyles } from "./shared-styles";
+import { LitElement, html, css, nothing } from "lit";
+import type { PropertyValues } from "lit";
+import { sharedStyleSheet } from "./shared-style-sheet";
 
-const styles = `
-  ${sharedStyles}
-
+const dialogStyles = css`
   :host {
     display: contents;
   }
@@ -94,21 +93,31 @@ const styles = `
 
   @media (prefers-reduced-motion: no-preference) {
     dialog[open] {
-      animation: ds-dialog-in var(--ds-duration-normal) var(--ds-ease-emphasized);
+      animation: mirabelle-ds-dialog-in var(--ds-duration-normal) var(--ds-ease-emphasized);
     }
     dialog[open]::backdrop {
-      animation: ds-backdrop-in var(--ds-duration-normal) var(--ds-ease-standard);
+      animation: mirabelle-ds-backdrop-in var(--ds-duration-normal) var(--ds-ease-standard);
     }
   }
 
-  @keyframes ds-dialog-in {
-    from { opacity: 0; transform: translateY(6px) scale(0.98); }
-    to { opacity: 1; transform: none; }
+  @keyframes mirabelle-ds-dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
-  @keyframes ds-backdrop-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  @keyframes mirabelle-ds-backdrop-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `;
 
@@ -116,16 +125,27 @@ const HEADING_LEVELS = new Set(["1", "2", "3", "4", "5", "6"]);
 
 let dialogCounter = 0;
 
-export class DsDialog extends BaseElement {
-  static observedAttributes = ["open", "heading-level", "label", "dismissible"];
+export class DsDialog extends LitElement {
+  static styles = [sharedStyleSheet, dialogStyles];
+
+  static properties = {
+    dialogOpen: { attribute: "open", type: Boolean, reflect: true },
+    headingLevel: { attribute: "heading-level", type: String, reflect: true },
+    label: { type: String, reflect: true }
+  };
+
+  dialogOpen = false;
+  headingLevel = "2";
+  label = "";
 
   private previousActive: Element | null = null;
   private dialogEl: HTMLDialogElement | null = null;
-  private titleId = `ds-dialog-title-${++dialogCounter}`;
+  private readonly titleId = `mirabelle-ds-dialog-title-${++dialogCounter}`;
+  private dialogListenersBound = false;
 
   open(): void {
-    if (!this.hasAttribute("open")) {
-      this.setAttribute("open", "");
+    if (!this.dialogOpen) {
+      this.dialogOpen = true;
     }
   }
 
@@ -133,12 +153,12 @@ export class DsDialog extends BaseElement {
     if (this.dialogEl?.open) {
       this.dialogEl.close(returnValue ?? "");
     }
-    this.removeAttribute("open");
+    this.dialogOpen = false;
   }
 
-  private handleClose = () => {
-    if (this.hasAttribute("open")) {
-      this.removeAttribute("open");
+  private handleClose = (): void => {
+    if (this.dialogOpen) {
+      this.dialogOpen = false;
     }
     const restore = this.previousActive;
     this.previousActive = null;
@@ -146,7 +166,7 @@ export class DsDialog extends BaseElement {
       restore.focus({ preventScroll: true });
     }
     this.dispatchEvent(
-      new CustomEvent("ds-close", {
+      new CustomEvent("mirabelle-ds-close", {
         bubbles: true,
         composed: true,
         detail: { returnValue: this.dialogEl?.returnValue ?? "" }
@@ -154,13 +174,13 @@ export class DsDialog extends BaseElement {
     );
   };
 
-  private handleCancel = (event: Event) => {
+  private handleCancel = (event: Event): void => {
     if (!this.isDismissible()) {
       event.preventDefault();
     }
   };
 
-  private handleBackdropClick = (event: MouseEvent) => {
+  private handleBackdropClick = (event: MouseEvent): void => {
     if (!this.isDismissible() || !this.dialogEl) return;
     if (event.target === this.dialogEl) {
       this.close();
@@ -173,101 +193,95 @@ export class DsDialog extends BaseElement {
     return raw !== "false";
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-    if (oldValue === newValue) return;
-
-    if (name === "open") {
-      this.syncOpenState();
-      return;
-    }
-
-    super.attributeChangedCallback(name, oldValue, newValue);
-  }
-
-  private syncOpenState() {
+  private syncOpenState(): void {
     if (!this.dialogEl) return;
-    const shouldBeOpen = this.hasAttribute("open");
+    const shouldBeOpen = this.dialogOpen;
 
     if (shouldBeOpen && !this.dialogEl.open) {
       this.previousActive = (this.getRootNode() as Document | ShadowRoot).activeElement;
       this.dialogEl.showModal();
-      this.dispatchEvent(
-        new CustomEvent("ds-open", { bubbles: true, composed: true })
-      );
+      this.dispatchEvent(new CustomEvent("mirabelle-ds-open", { bubbles: true, composed: true }));
     } else if (!shouldBeOpen && this.dialogEl.open) {
       this.dialogEl.close();
     }
   }
 
-  protected render() {
-    const rawLevel = this.getAttribute("heading-level") ?? "2";
-    const level = HEADING_LEVELS.has(rawLevel) ? rawLevel : "2";
-    const ariaLabel = this.getAttribute("label");
-
-    this.root.innerHTML = `<style>${styles}</style>`;
-
-    const dialog = document.createElement("dialog");
-    dialog.setAttribute("role", "dialog");
-    dialog.setAttribute("aria-modal", "true");
-    if (ariaLabel) {
-      dialog.setAttribute("aria-label", ariaLabel);
-    } else {
-      dialog.setAttribute("aria-labelledby", this.titleId);
+  firstUpdated(): void {
+    this.dialogEl = this.renderRoot.querySelector("dialog");
+    if (this.dialogEl && !this.dialogListenersBound) {
+      this.dialogEl.addEventListener("close", this.handleClose);
+      this.dialogEl.addEventListener("cancel", this.handleCancel);
+      this.dialogEl.addEventListener("click", this.handleBackdropClick);
+      this.dialogListenersBound = true;
     }
-
-    dialog.addEventListener("close", this.handleClose);
-    dialog.addEventListener("cancel", this.handleCancel);
-    dialog.addEventListener("click", this.handleBackdropClick);
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "body-wrapper";
-
-    const header = document.createElement("header");
-
-    const heading = document.createElement(`h${level}`);
-    heading.className = "title";
-    heading.id = this.titleId;
-    const titleSlot = document.createElement("slot");
-    titleSlot.name = "title";
-    heading.append(titleSlot);
-    header.append(heading);
-
-    if (this.isDismissible()) {
-      const closeBtn = document.createElement("button");
-      closeBtn.type = "button";
-      closeBtn.className = "close";
-      closeBtn.setAttribute("aria-label", "Close dialog");
-      closeBtn.textContent = "\u00D7";
-      closeBtn.addEventListener("click", () => this.close());
-      header.append(closeBtn);
-    }
-
-    wrapper.append(header);
-
-    const body = document.createElement("div");
-    body.className = "body";
-    body.append(document.createElement("slot"));
-    wrapper.append(body);
-
-    const footer = document.createElement("footer");
-    const footerSlot = document.createElement("slot");
-    footerSlot.name = "footer";
-    footer.append(footerSlot);
-    wrapper.append(footer);
-
-    dialog.append(wrapper);
-    this.root.append(dialog);
-
-    this.dialogEl = dialog;
-
-    if (this.hasAttribute("open")) {
+    if (this.dialogOpen) {
       queueMicrotask(() => this.syncOpenState());
     }
   }
 
-  disconnectedCallback() {
+  updated(changed: PropertyValues): void {
+    super.updated(changed);
+    this.dialogEl = this.renderRoot.querySelector("dialog");
+    if (changed.has("dialogOpen")) {
+      this.syncOpenState();
+    }
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
     if (this.dialogEl?.open) {
       this.dialogEl.close();
     }
+  }
+
+  private headingSlot(level: string) {
+    const slot = html`<slot name="title"></slot>`;
+    switch (level) {
+      case "1":
+        return html`<h1 class="title" id=${this.titleId}>${slot}</h1>`;
+      case "3":
+        return html`<h3 class="title" id=${this.titleId}>${slot}</h3>`;
+      case "4":
+        return html`<h4 class="title" id=${this.titleId}>${slot}</h4>`;
+      case "5":
+        return html`<h5 class="title" id=${this.titleId}>${slot}</h5>`;
+      case "6":
+        return html`<h6 class="title" id=${this.titleId}>${slot}</h6>`;
+      default:
+        return html`<h2 class="title" id=${this.titleId}>${slot}</h2>`;
+    }
+  }
+
+  render() {
+    const rawLevel = this.headingLevel ?? "2";
+    const level = HEADING_LEVELS.has(rawLevel) ? rawLevel : "2";
+    const ariaLabel = this.label;
+
+    return html`
+      <dialog
+        role="dialog"
+        aria-modal="true"
+        aria-label=${ariaLabel || nothing}
+        aria-labelledby=${ariaLabel ? nothing : this.titleId}
+      >
+        <div class="body-wrapper">
+          <header>
+            ${this.headingSlot(level)}
+            ${this.isDismissible()
+              ? html`<button
+                  type="button"
+                  class="close"
+                  aria-label="Close dialog"
+                  @click=${() => this.close()}
+                >
+                  ×
+                </button>`
+              : null}
+          </header>
+          <div class="body"><slot></slot></div>
+          <footer><slot name="footer"></slot></footer>
+        </div>
+      </dialog>
+    `;
   }
 }

@@ -1,9 +1,7 @@
-import { BaseElement } from "./base-element";
-import { sharedStyles } from "./shared-styles";
+import { LitElement, html, css } from "lit";
+import { sharedStyleSheet } from "./shared-style-sheet";
 
-const styles = `
-  ${sharedStyles}
-
+const cardStyles = css`
   :host {
     display: block;
   }
@@ -60,8 +58,21 @@ const styles = `
 
 const HEADING_LEVELS = new Set(["1", "2", "3", "4", "5", "6"]);
 
-export class DsCard extends BaseElement {
-  static observedAttributes = ["elevated", "heading-level"];
+export class DsCard extends LitElement {
+  static styles = [sharedStyleSheet, cardStyles];
+
+  static properties = {
+    elevated: { type: Boolean, reflect: true },
+    headingLevel: { attribute: "heading-level", type: String, reflect: true }
+  };
+
+  elevated = false;
+  headingLevel = "2";
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.addEventListener("slotchange", () => this.requestUpdate());
+  }
 
   private hasSlottedContent(slotName: string): boolean {
     if (slotName === "") {
@@ -75,57 +86,43 @@ export class DsCard extends BaseElement {
     return !!this.querySelector(`[slot="${slotName}"]`);
   }
 
-  protected render() {
-    const elevated = this.hasAttribute("elevated");
-    const rawLevel = this.getAttribute("heading-level") ?? "2";
-    const level = HEADING_LEVELS.has(rawLevel) ? rawLevel : "2";
+  private headingTag(level: string) {
+    const titleSlot = html`<slot name="title"></slot>`;
+    switch (level) {
+      case "1":
+        return html`<h1 class="title">${titleSlot}</h1>`;
+      case "3":
+        return html`<h3 class="title">${titleSlot}</h3>`;
+      case "4":
+        return html`<h4 class="title">${titleSlot}</h4>`;
+      case "5":
+        return html`<h5 class="title">${titleSlot}</h5>`;
+      case "6":
+        return html`<h6 class="title">${titleSlot}</h6>`;
+      default:
+        return html`<h2 class="title">${titleSlot}</h2>`;
+    }
+  }
 
+  render() {
+    const rawLevel = this.headingLevel ?? "2";
+    const level = HEADING_LEVELS.has(rawLevel) ? rawLevel : "2";
     const hasEyebrow = this.hasSlottedContent("eyebrow");
     const hasTitle = this.hasSlottedContent("title");
     const hasBody = this.hasSlottedContent("");
     const hasFooter = this.hasSlottedContent("footer");
 
-    this.root.innerHTML = `<style>${styles}</style>`;
-
-    const article = document.createElement("article");
-    article.dataset.elevated = String(elevated);
-
-    if (hasEyebrow || hasTitle) {
-      const header = document.createElement("header");
-      if (hasEyebrow) {
-        const eyebrow = document.createElement("p");
-        eyebrow.className = "eyebrow";
-        const slot = document.createElement("slot");
-        slot.name = "eyebrow";
-        eyebrow.append(slot);
-        header.append(eyebrow);
-      }
-      if (hasTitle) {
-        const heading = document.createElement(`h${level}`);
-        heading.className = "title";
-        const slot = document.createElement("slot");
-        slot.name = "title";
-        heading.append(slot);
-        header.append(heading);
-      }
-      article.append(header);
-    }
-
-    if (hasBody) {
-      const body = document.createElement("div");
-      body.className = "body";
-      body.append(document.createElement("slot"));
-      article.append(body);
-    }
-
-    if (hasFooter) {
-      const footer = document.createElement("footer");
-      const slot = document.createElement("slot");
-      slot.name = "footer";
-      footer.append(slot);
-      article.append(footer);
-    }
-
-    this.root.append(article);
+    return html`
+      <article data-elevated=${String(this.elevated)}>
+        ${hasEyebrow || hasTitle
+          ? html`<header>
+              ${hasEyebrow ? html`<p class="eyebrow"><slot name="eyebrow"></slot></p>` : null}
+              ${hasTitle ? this.headingTag(level) : null}
+            </header>`
+          : null}
+        ${hasBody ? html`<div class="body"><slot></slot></div>` : null}
+        ${hasFooter ? html`<footer><slot name="footer"></slot></footer>` : null}
+      </article>
+    `;
   }
 }

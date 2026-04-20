@@ -10,9 +10,13 @@ type Args = {
 };
 
 const meta: Meta<Args> = {
-  title: "Components/Card",
+  title: "Mirabelle DS/Card",
   tags: ["autodocs"],
   argTypes: {
+    eyebrow: { control: "text" },
+    title: { control: "text" },
+    body: { control: "text" },
+    elevated: { control: "boolean" },
     headingLevel: { control: "select", options: ["1", "2", "3", "4", "5", "6"] }
   },
   args: {
@@ -24,7 +28,7 @@ const meta: Meta<Args> = {
   },
   render: (args) => html`
     <div style="max-width: 22rem;">
-      <ds-card
+      <mirabelle-ds-card
         ?elevated=${args.elevated}
         heading-level=${args.headingLevel}
       >
@@ -32,9 +36,9 @@ const meta: Meta<Args> = {
         <span slot="title">${args.title}</span>
         <p>${args.body}</p>
         <div slot="footer">
-          <ds-badge tone="success">Light + dark</ds-badge>
+          <mirabelle-ds-badge tone="success">Light + dark</mirabelle-ds-badge>
         </div>
-      </ds-card>
+      </mirabelle-ds-card>
     </div>
   `
 };
@@ -43,16 +47,16 @@ export default meta;
 
 type Story = StoryObj<Args>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
-export const Elevated: Story = { args: { elevated: true } };
+export const ExamplesElevated: Story = { args: { elevated: true } };
 
-export const BodyOnly: Story = {
+export const ExamplesBodyOnly: Story = {
   render: () => html`
     <div style="max-width: 22rem;">
-      <ds-card>
+      <mirabelle-ds-card>
         <p>Card with no header or footer. Empty sections should not render.</p>
-      </ds-card>
+      </mirabelle-ds-card>
     </div>
   `
 };

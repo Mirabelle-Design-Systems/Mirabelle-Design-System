@@ -1,24 +1,34 @@
-# Custom Design System Starter - WORK IN PROGRESS (April 2026)
+# Mirabelle DS — WORK IN PROGRESS (April 2026)
 
-A lightweight design system starter built on native Web Components with a token-first theme layer.
-The goal is to keep the core framework-agnostic so React can sit on top later as a wrapper package,
-not as the source of truth.
+Mirabelle DS is a design system starter built with native Web Components, shared CSS, and a
+token-first light/dark theme layer. The core stays framework-agnostic; an optional React layer in
+`src/react/` wraps the same custom elements for use in React apps.
+
+**North star:** design tokens describe what the system *means*; custom elements are what users
+(and assistive tech) *interact with*; Storybook documents component states; React is a thin
+adapter, not a second UI implementation.
+
+## Documentation
+
+- **Storybook:** `npm run storybook` — component states under **Mirabelle DS/** in the sidebar.
+- **[CHANGELOG.md](CHANGELOG.md)** — breaking changes and releases.
+- **Pull requests** — checklist in [`.github/pull_request_template.md`](.github/pull_request_template.md) (accessibility, keyboard, tokens).
+
+A local `docs/` folder is **gitignored**: use it for private notes or contracts on your machine; it is not part of the shared repository.
 
 ## What is included
 
-- Design tokens for typography, spacing, radius, shadow, and color
+- Design tokens for color, typography, spacing, radius, shadow, motion (durations and easings),
+  layout-oriented primitives (container widths, breakpoints, z-index), and more
 - Semantic light and dark theme variables
-- Simple starter components:
-  - `ds-button`
-  - `ds-card`
-  - `ds-input`
-  - `ds-badge`
-- A demo page showing how the tokens and components work together
+- Web Component implementations (**Lit** `LitElement`, shadow DOM, shared **`CSSStyleSheet`** for token bridge + per-component `css` blocks):
+  - `mirabelle-ds-button`, `mirabelle-ds-card`, `mirabelle-ds-input`, `mirabelle-ds-badge`, `mirabelle-ds-dialog`, `mirabelle-ds-toast`
+- Optional thin React wrappers around those tags (`src/react/`)
+- A Vite demo page (`src/main.ts`) and **Storybook** stories grouped under **Mirabelle DS/**
 
-### Roadmap
-
-- `ds-dialog` and `ds-toast` are shown on the demo page as static CSS previews only.
-  They are not yet implemented as components.
+```bash
+npm run storybook
+```
 
 ## Project structure
 
@@ -61,17 +71,22 @@ import { defineDesignSystem } from "./src";
 defineDesignSystem();
 ```
 
+`defineDesignSystem()` walks the internal registry and calls `customElements.define` for each
+`mirabelle-ds-*` tag exactly once per name, so your bundle can import side-effect CSS and then register
+tags before any markup uses them. The Vite demo (`src/main.ts`) calls it before injecting the
+showcase, which uses live components for every primitive including dialog and toast.
+
 Then use them in HTML:
 
 ```html
-<ds-card elevated>
+<mirabelle-ds-card elevated>
   <span slot="eyebrow">Status</span>
   <span slot="title">Design system ready</span>
   <p>Web Components stay reusable across frameworks.</p>
   <div slot="footer">
-    <ds-badge tone="success">Light + dark mode</ds-badge>
+    <mirabelle-ds-badge tone="success">Light + dark mode</mirabelle-ds-badge>
   </div>
-</ds-card>
+</mirabelle-ds-card>
 ```
 
 ## React as the second layer

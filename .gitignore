@@ -3,3 +3,6 @@ dist/
 storybook-static/
 .playwright-cli/
 .DS_Store
+
+# Private local documentation (not committed)
+docs/

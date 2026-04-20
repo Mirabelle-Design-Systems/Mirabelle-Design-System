@@ -23,7 +23,7 @@ export type DsButtonProps = BaseProps & {
 };
 
 export const DsButton = createWrapper<DsButtonProps>({
-  tagName: "ds-button",
+  tagName: "mirabelle-ds-button",
   booleanProps: ["disabled", "block"]
 });
 
@@ -33,7 +33,7 @@ export type DsCardProps = BaseProps & {
 };
 
 export const DsCard = createWrapper<DsCardProps>({
-  tagName: "ds-card",
+  tagName: "mirabelle-ds-card",
   booleanProps: ["elevated"]
 });
 
@@ -53,11 +53,11 @@ export type DsInputProps = BaseProps & {
 };
 
 export const DsInput = createWrapper<DsInputProps>({
-  tagName: "ds-input",
+  tagName: "mirabelle-ds-input",
   booleanProps: ["required", "disabled"],
   events: {
-    onDsInput: { eventName: "ds-input", prop: "onDsInput" },
-    onDsChange: { eventName: "ds-change", prop: "onDsChange" }
+    onDsInput: { eventName: "mirabelle-ds-field-input", prop: "onDsInput" },
+    onDsChange: { eventName: "mirabelle-ds-change", prop: "onDsChange" }
   }
 });
 
@@ -67,7 +67,7 @@ export type DsBadgeProps = BaseProps & {
 };
 
 export const DsBadge = createWrapper<DsBadgeProps>({
-  tagName: "ds-badge",
+  tagName: "mirabelle-ds-badge",
   booleanProps: ["live"]
 });
 
@@ -81,11 +81,11 @@ export type DsDialogProps = BaseProps & {
 };
 
 export const DsDialog = createWrapper<DsDialogProps>({
-  tagName: "ds-dialog",
+  tagName: "mirabelle-ds-dialog",
   booleanProps: ["open"],
   events: {
-    onDsOpen: { eventName: "ds-open", prop: "onDsOpen" },
-    onDsClose: { eventName: "ds-close", prop: "onDsClose" }
+    onDsOpen: { eventName: "mirabelle-ds-open", prop: "onDsOpen" },
+    onDsClose: { eventName: "mirabelle-ds-close", prop: "onDsClose" }
   }
 });
 
@@ -99,10 +99,10 @@ export type DsToastProps = BaseProps & {
 };
 
 export const DsToast = createWrapper<DsToastProps>({
-  tagName: "ds-toast",
+  tagName: "mirabelle-ds-toast",
   booleanProps: ["open"],
   events: {
-    onDsToastOpen: { eventName: "ds-toast-open", prop: "onDsToastOpen" },
-    onDsToastClose: { eventName: "ds-toast-close", prop: "onDsToastClose" }
+    onDsToastOpen: { eventName: "mirabelle-ds-toast-open", prop: "onDsToastOpen" },
+    onDsToastClose: { eventName: "mirabelle-ds-toast-close", prop: "onDsToastClose" }
   }
 });

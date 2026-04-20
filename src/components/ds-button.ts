@@ -1,9 +1,7 @@
-import { BaseElement } from "./base-element";
-import { sharedStyles } from "./shared-styles";
+import { LitElement, html, css } from "lit";
+import { sharedStyleSheet } from "./shared-style-sheet";
 
-const styles = `
-  ${sharedStyles}
-
+const buttonStyles = css`
   :host {
     display: inline-block;
   }
@@ -110,10 +108,24 @@ const VARIANTS = new Set(["primary", "secondary", "ghost", "danger"]);
 const SIZES = new Set(["sm", "md", "lg"]);
 const TYPES = new Set(["button", "submit", "reset"]);
 
-export class DsButton extends BaseElement {
+export class DsButton extends LitElement {
   static formAssociated = true;
 
-  static observedAttributes = ["variant", "size", "disabled", "type", "aria-label"];
+  static styles = [sharedStyleSheet, buttonStyles];
+
+  static properties = {
+    variant: { type: String, reflect: true },
+    size: { type: String, reflect: true },
+    disabled: { type: Boolean, reflect: true },
+    buttonType: { attribute: "type", type: String, reflect: true },
+    block: { type: Boolean, reflect: true }
+  };
+
+  variant = "primary";
+  size = "md";
+  disabled = false;
+  buttonType = "button";
+  block = false;
 
   private readonly internals: ElementInternals | null;
 
@@ -126,46 +138,41 @@ export class DsButton extends BaseElement {
     return this.internals?.form ?? null;
   }
 
-  get type(): string {
-    const raw = this.getAttribute("type") ?? "button";
-    return TYPES.has(raw) ? raw : "button";
+  get effectiveType(): string {
+    return TYPES.has(this.buttonType) ? this.buttonType : "button";
   }
 
-  protected render() {
-    const rawVariant = this.getAttribute("variant") ?? "primary";
-    const rawSize = this.getAttribute("size") ?? "md";
+  private handleClick(event: MouseEvent) {
+    if (this.disabled) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    const form = this.form;
+    if (!form) return;
+    const t = this.effectiveType;
+    if (t === "submit") {
+      form.requestSubmit();
+    } else if (t === "reset") {
+      form.reset();
+    }
+  }
 
-    const variant = VARIANTS.has(rawVariant) ? rawVariant : "primary";
-    const size = SIZES.has(rawSize) ? rawSize : "md";
-    const type = this.type;
-    const disabled = this.hasAttribute("disabled");
+  render() {
+    const variant = VARIANTS.has(this.variant) ? this.variant : "primary";
+    const size = SIZES.has(this.size) ? this.size : "md";
     const ariaLabel = this.getAttribute("aria-label");
-
-    this.root.innerHTML = `<style>${styles}</style>`;
-
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.variant = variant;
-    button.dataset.size = size;
-    if (disabled) button.disabled = true;
-    if (ariaLabel) button.setAttribute("aria-label", ariaLabel);
-    button.append(document.createElement("slot"));
-
-    button.addEventListener("click", (event) => {
-      if (this.hasAttribute("disabled")) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return;
-      }
-      const form = this.form;
-      if (!form) return;
-      if (type === "submit") {
-        form.requestSubmit();
-      } else if (type === "reset") {
-        form.reset();
-      }
-    });
-
-    this.root.append(button);
+    return html`
+      <button
+        type="button"
+        data-variant=${variant}
+        data-size=${size}
+        ?disabled=${this.disabled}
+        aria-label=${ariaLabel || undefined}
+        @click=${this.handleClick}
+      >
+        <slot></slot>
+      </button>
+    `;
   }
 }
